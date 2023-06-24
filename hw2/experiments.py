@@ -21,27 +21,32 @@ MODEL_TYPES = dict(
 
 
 def run_experiment(
-    run_name,
-    out_dir="./results",
-    seed=None,
-    device=None,
-    # Training params
-    bs_train=128,
-    bs_test=None,
-    batches=100,
-    epochs=100,
-    early_stopping=3,
-    checkpoints=None,
-    lr=1e-3,
-    reg=1e-3,
-    # Model params
-    filters_per_layer=[64],
-    layers_per_block=2,
-    pool_every=2,
-    hidden_dims=[1024],
-    model_type="cnn",
-    # You can add extra configuration for your experiments here
-    **kw,
+        run_name,
+        out_dir="./results",
+        seed=None,
+        device=None,
+        # Training params
+        bs_train=128,
+        bs_test=None,
+        batches=100,
+        epochs=100,
+        early_stopping=3,
+        checkpoints=None,
+        lr=1e-3,
+        reg=1e-3,
+        # Model params
+        filters_per_layer=None,
+        layers_per_block=None,
+        pool_every=None,
+        hidden_dims=None,
+        model_type="cnn",
+        # Additional parameters to consider:
+        # in_channels=3,
+        # conv_params=dict(kernel_size=3, stride=1, padding=1),
+        pooling_params=dict(kernel_size=2),
+
+        # You can add extra configuration for your experiments here
+        **kw,
 ):
     """
     Executes a single run of a Part3 experiment with a single configuration.
@@ -61,7 +66,7 @@ def run_experiment(
     ds_test = CIFAR10(root=DATA_DIR, download=True, train=False, transform=tf)
 
     if not device:
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # Select model class
     if model_type not in MODEL_TYPES:
@@ -78,39 +83,58 @@ def run_experiment(
     fit_res = None
     # ====== YOUR CODE: ======
     # Data - use DataLoader
-    # Data - use DataLoader
+    x0, _ = ds_train[0]
+    in_size = x0.shape
     train_loader = torch.utils.data.DataLoader(ds_train, batch_size=bs_train, shuffle=True)
     test_loader = torch.utils.data.DataLoader(ds_test, batch_size=bs_test)
+    """
+    resnet:
 
+                in_size,
+                out_classes,
+                channels,
+                pool_every,
+                hidden_dims,
+                batchnorm=False,
+                dropout=0.0,
+                **kwargs,
+    conv:
+
+                in_size,
+                out_classes: int,
+                channels: Sequence[int],
+                pool_every: int,
+                hidden_dims: Sequence[int],
+                conv_params: dict = {},
+                activation_type: str = "relu",
+                activation_params: dict = {},
+                pooling_type: str = "max",
+                pooling_params: dict = {},
+    """
     # Create model, loss, and optimizer instances
     model = model_cls(
-        in_channels=3,
-        out_channels=10,
         hidden_dims=hidden_dims,
-        filters_per_layer=filters_per_layer,
-        layers_per_block=layers_per_block,
+        in_size=in_size,
+        out_classes=10,
+        channels=filters_per_layer * layers_per_block,
         pool_every=pool_every,
+        pooling_params=pooling_params
     ).to(device)
 
-    criterion = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=reg)
+    # Create model, loss and optimizer instances
 
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=reg)
+    criterion = torch.nn.CrossEntropyLoss()
     # Create a Trainer instance
     trainer = training.TorchTrainer(model, criterion, optimizer, device)
 
     # Train the model and save the fit results
     fit_res = trainer.fit(
-        train_loader=train_loader,
-        val_loader=test_loader,
-        max_epochs=epochs,
+        dl_train=train_loader,
+        dl_test=test_loader,
+        num_epochs=epochs,
         early_stopping=early_stopping,
-        batches_per_epoch=batches,
     )
-
-    # Save experiment parameters and fit results
-    save_experiment(run_name, out_dir, cfg, fit_res)
-    # Create model, loss and optimizer instances
-    
     # ========================
 
     save_experiment(run_name, out_dir, cfg, fit_res)
@@ -128,7 +152,7 @@ def save_experiment(run_name, out_dir, cfg, fit_res):
     with open(output_filename, "w") as f:
         json.dump(output, f, indent=2)
 
-    print(f"*** Output file {output_filename} written")
+    print(f"* Output file {output_filename} written")
 
 
 def load_experiment(filename):
@@ -256,9 +280,9 @@ def parse_cli():
     return parsed
 
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     parsed_args = parse_cli()
     subcmd_fn = parsed_args.subcmd_fn
     del parsed_args.subcmd_fn
-    print(f"*** Starting {subcmd_fn.__name__} with config:\n{parsed_args}")
+    print(f"* Starting {subcmd_fn._name_} with config:\n{parsed_args}")
     subcmd_fn(**vars(parsed_args))
