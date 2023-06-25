@@ -84,30 +84,6 @@ def run_experiment(
     in_size = x0.shape
     train_loader = torch.utils.data.DataLoader(ds_train, batch_size=bs_train, shuffle=True)
     test_loader = torch.utils.data.DataLoader(ds_test, batch_size=bs_test)
-    """
-    resnet:
-            
-                in_size,
-                out_classes,
-                channels,
-                pool_every,
-                hidden_dims,
-                batchnorm=False,
-                dropout=0.0,
-                **kwargs,
-    conv:
-        
-                in_size,
-                out_classes: int,
-                channels: Sequence[int],
-                pool_every: int,
-                hidden_dims: Sequence[int],
-                conv_params: dict = {},
-                activation_type: str = "relu",
-                activation_params: dict = {},
-                pooling_type: str = "max",
-                pooling_params: dict = {},
-    """
     # Create model, loss, and optimizer instances
     model = model_cls(
         hidden_dims=hidden_dims,
