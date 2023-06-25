@@ -313,7 +313,8 @@ class ResNetClassifier(ConvClassifier):
             block_kernels = [3] * len(block_channels)
             layers.append(ResidualBlock(channels[i], block_channels, block_kernels,
                                         batchnorm=self.batchnorm, dropout=self.dropout,
-                                        activation_type=self.activation_type, activation_params=self.activation_params))
+                                        activation_type=self.activation_type,
+                                        activation_params=self.activation_params))
             if i != jumps[-1]:
                 layers.append(POOLINGS[self.pooling_type](**self.pooling_params))
                 # ========================
@@ -329,4 +330,6 @@ class YourCodeNet(ResNetClassifier):
                          pool_every,
                          hidden_dims,
                          dropout=0.4,  # Drop 40% of neurons
-                         batchnorm=True)
+                         batchnorm=True,
+                         pooling_params=dict(kernel_size=2, stride=2, padding=1),
+                         conv_params=dict(kernel_size=3, padding=1))
