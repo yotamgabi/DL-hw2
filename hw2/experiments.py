@@ -33,15 +33,12 @@ def run_experiment(
     lr=1e-3,
     reg=1e-3,
     # Model params
-    filters_per_layer=None,
-    layers_per_block=None,
-    pool_every=None,
-    hidden_dims=None,
-    model_type="cnn",    
-    #Additional parameters to consider:
-    conv_params=dict(kernel_size=3, stride=1, padding=1),
-    pooling_params=dict(kernel_size=2),
-    
+    filters_per_layer=[64],
+    layers_per_block=2,
+    pool_every=2,
+    hidden_dims=[1024],
+    model_type="cnn",
+
     # You can add extra configuration for your experiments here
     **kw
 ):
