@@ -321,73 +321,12 @@ class ResNetClassifier(ConvClassifier):
         return seq
 
 
-class YourCodeNet(ConvClassifier):
-    def __init__(self, *args, **kwargs):
-        """
-        See ConvClassifier.__init__
-        """
-        super().__init__(*args, **kwargs)
-        # TODO: Add any additional initialization as needed.
-        # ====== YOUR CODE: ======
-
-        # ========================
-
-    def _make_feature_extractor(self):
-        in_channels, in_h, in_w, = tuple(self.in_size)
-        layers = []
-
-        for i, out_channels in enumerate(self.channels):
-            # Add an inception block if we're at the second conv layer
-            if i == 1:
-                layers.append(models.inception_v3(pretrained=False, aux_logits=False, num_classes=self.out_classes,
-                                                  transform_input=False))
-            else:
-                layers.append(nn.Conv2d(in_channels, out_channels, kernel_size=3))
-                layers.append(nn.BatchNorm2d(out_channels))  # Adding batch normalization
-                layers.append(ACTIVATIONS[self.activation_type](self.activation_params))
-
-            if (i + 1) % self.pool_every == 0:
-                layers.append(POOLINGS[self.pooling_type](kernel_size=3))
-
-            in_channels = out_channels
-
-        seq = nn.Sequential(*layers)
-        return seq
-
-    def _make_classifier(self):
-        layers = []
-        n_features = self._n_features()
-
-        for hidden_dim in self.hidden_dims:
-            layers.append(nn.Linear(n_features, hidden_dim))
-            layers.append(nn.BatchNorm1d(hidden_dim))  # Adding batch normalization
-            layers.append(nn.Dropout(p=0.5))  # Adding dropout
-            layers.append(ACTIVATIONS[self.activation_type](**self.activation_params))
-            n_features = hidden_dim
-
-        layers.append(nn.Linear(n_features, self.out_classes))
-        seq = nn.Sequential(*layers)
-        return seq
-
-    def forward(self, x):
-        # Adding a skip connection
-        identity = x  # save the original x
-        features = self.feature_extractor(x)
-        features = features.view(features.size(0), -1)
-        out = self.classifier(features)
-        out += identity  # add the original x to the output
-        return out
-
-    def _initialize_weights(self):
-        # He initialization
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
-                if m.bias is not None:
-                    nn.init.constant_(m.bias, 0)
-            elif isinstance(m, nn.BatchNorm2d):
-                nn.init.constant_(m.weight, 1)
-                nn.init.constant_(m.bias, 0)
-            elif isinstance(m, nn.Linear):
-                nn.init.normal_(m.weight, 0, 0.01)
-                nn.init.constant_(m.bias, 0)
+class YourCodeNet(ResNetClassifier):
+    def __init__(self, in_size, out_classes, channels, pool_every, hidden_dims):
+        super().__init__(in_size,
+                         out_classes,
+                         channels,
+                         pool_every,
+                         hidden_dims,
+                         dropout=0.4,  # Drop 40% of neurons
+                         batchnorm=True)
