@@ -43,7 +43,7 @@ def run_experiment(
         # Additional parameters to consider:
         # in_channels=3,
         # conv_params=dict(kernel_size=3, stride=1, padding=1),
-        pooling_params=dict(kernel_size=2),
+        pooling_params = dict(kernel_size=2),
 
         # You can add extra configuration for your experiments here
         **kw,
@@ -280,7 +280,7 @@ def parse_cli():
     return parsed
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     parsed_args = parse_cli()
     subcmd_fn = parsed_args.subcmd_fn
     del parsed_args.subcmd_fn
