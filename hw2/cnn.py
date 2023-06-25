@@ -329,7 +329,6 @@ class YourCodeNet(ConvClassifier):
         super().__init__(*args, **kwargs)
         # TODO: Add any additional initialization as needed.
         # ====== YOUR CODE: ======
-        self.pooling_params = dict(kernel_size=2),
 
         # ========================
 
