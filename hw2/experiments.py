@@ -60,7 +60,7 @@ def run_experiment(
     ds_test = CIFAR10(root=DATA_DIR, download=True, train=False, transform=tf)
 
     if not device:
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Select model class
     if model_type not in MODEL_TYPES:
@@ -88,8 +88,7 @@ def run_experiment(
         out_classes=10,
         channels=filters_per_layer*layers_per_block,
         pool_every=pool_every,
-        pooling_params=pooling_params,
-        conv_params=conv_params
+        **kw
     ).to(device)
     
     # Create model, loss and optimizer instances
