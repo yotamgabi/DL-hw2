@@ -23,11 +23,11 @@ class ConvClassifier(nn.Module):
             channels: Sequence[int],
             pool_every: int,
             hidden_dims: Sequence[int],
-            conv_params: dict = {},
+            conv_params=dict(kernel_size=3, padding=1),
             activation_type: str = "relu",
             activation_params: dict = {},
             pooling_type: str = "max",
-            pooling_params: dict = {},
+            pooling_params=dict(kernel_size=2, stride=2, padding=1)
     ):
         """
         :param in_size: Size of input images, e.g. (C,H,W).
@@ -330,6 +330,4 @@ class YourCodeNet(ResNetClassifier):
                          pool_every,
                          hidden_dims,
                          dropout=0.4,  # Drop 40% of neurons
-                         batchnorm=True,
-                         pooling_params=dict(kernel_size=2, stride=2, padding=1),
-                         conv_params=dict(kernel_size=3, padding=1))
+                         batchnorm=True)
