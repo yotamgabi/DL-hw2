@@ -329,5 +329,5 @@ class YourCodeNet(ResNetClassifier):
                          channels,
                          pool_every,
                          hidden_dims,
-                         dropout=0.4,  # Drop 40% of neurons
+                         dropout=0.2,  # Drop 40% of neurons
                          batchnorm=True)
