@@ -115,11 +115,7 @@ def plot_fit(fit_res: FitResult, fig=None, log_loss=False, legend=None):
         ax = axes[idx]
         attr = f"{traintest}_{lossacc}"
         data = getattr(fit_res, attr)
-        if legend not in used_legends:
-            h = ax.plot(np.arange(1, len(data) + 1), data, label=legend)
-            used_legends[legend] = True
-        else:
-            h = ax.plot(np.arange(1, len(data) + 1), data, label=legend)
+        h = ax.plot(np.arange(1, len(data) + 1), data, label=legend)
         ax.set_title(attr)
         if lossacc == "loss":
             ax.set_xlabel("Iteration #")
