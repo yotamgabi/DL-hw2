@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import itertools as it
 from typing import Sequence
+import torchvision.models as models
 
 ACTIVATIONS = {"relu": nn.ReLU, "lrelu": nn.LeakyReLU}
 POOLINGS = {"avg": nn.AvgPool2d, "max": nn.MaxPool2d}
@@ -22,11 +23,11 @@ class ConvClassifier(nn.Module):
             channels: Sequence[int],
             pool_every: int,
             hidden_dims: Sequence[int],
-            conv_params: dict = {},
+            conv_params=dict(kernel_size=3, padding=1),
             activation_type: str = "relu",
             activation_params: dict = {},
             pooling_type: str = "max",
-            pooling_params: dict = {},
+            pooling_params=dict(kernel_size=2, stride=2, padding=1)
     ):
         """
         :param in_size: Size of input images, e.g. (C,H,W).
@@ -83,7 +84,7 @@ class ConvClassifier(nn.Module):
             layers.append(conv_layer)
             layers.append(activation)
 
-            if  (i + 1) % self.pool_every == 0:
+            if (i + 1) % self.pool_every == 0:
                 pooling = POOLINGS[self.pooling_type](**self.pooling_params)
                 layers.append(pooling)
 
@@ -292,7 +293,7 @@ class ResNetClassifier(ConvClassifier):
 
     def _make_feature_extractor(self):
         in_channels, in_h, in_w, = tuple(self.in_size)
-    
+
         layers = []
         # TODO: Create the feature extractor part of the model:
         #  [-> (CONV -> ACT)*P -> POOL]*(N/P)
@@ -312,30 +313,21 @@ class ResNetClassifier(ConvClassifier):
             block_kernels = [3] * len(block_channels)
             layers.append(ResidualBlock(channels[i], block_channels, block_kernels,
                                         batchnorm=self.batchnorm, dropout=self.dropout,
-                                        activation_type=self.activation_type, activation_params=self.activation_params))
+                                        activation_type=self.activation_type,
+                                        activation_params=self.activation_params))
             if i != jumps[-1]:
-                layers.append(POOLINGS[self.pooling_type](**self.pooling_params))    
-        # ========================
+                layers.append(POOLINGS[self.pooling_type](**self.pooling_params))
+                # ========================
         seq = nn.Sequential(*layers)
         return seq
 
 
-class YourCodeNet(ConvClassifier):
-    def __init__(self, *args, **kwargs):
-        """
-        See ConvClassifier.__init__
-        """
-        super().__init__(*args, **kwargs)
-
-        # TODO: Add any additional initialization as needed.
-        # ====== YOUR CODE: ======
-        pass
-        # ========================
-
-    # TODO: Change whatever you want about the ConvClassifier to try to
-    #  improve it's results on CIFAR-10.
-    #  For example, add batchnorm, dropout, skip connections, change conv
-    #  filter sizes etc.
-    # ====== YOUR CODE: ======
-    
-    # ========================
+class YourCodeNet(ResNetClassifier):
+    def __init__(self, in_size, out_classes, channels, pool_every, hidden_dims):
+        super().__init__(in_size,
+                         out_classes,
+                         channels,
+                         pool_every,
+                         hidden_dims,
+                         dropout=0.2,  # Drop 40% of neurons
+                         batchnorm=True)

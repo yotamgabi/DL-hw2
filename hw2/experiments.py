@@ -18,13 +18,11 @@ DATA_DIR = os.path.expanduser("~/.pytorch-datasets")
 MODEL_TYPES = dict(
     cnn=cnn.ConvClassifier, resnet=cnn.ResNetClassifier, ycn=cnn.YourCodeNet
 )
-
-
 def run_experiment(
     run_name,
     out_dir="./results",
     seed=None,
-    device=None,
+    device= None,
     # Training params
     bs_train=128,
     bs_test=None,
@@ -40,8 +38,9 @@ def run_experiment(
     pool_every=2,
     hidden_dims=[1024],
     model_type="cnn",
+
     # You can add extra configuration for your experiments here
-    **kw,
+    **kw
 ):
     """
     Executes a single run of a Part3 experiment with a single configuration.
@@ -78,39 +77,34 @@ def run_experiment(
     fit_res = None
     # ====== YOUR CODE: ======
     # Data - use DataLoader
-    # Data - use DataLoader
+    x0,_ = ds_train[0]
+    in_size = x0.shape
     train_loader = torch.utils.data.DataLoader(ds_train, batch_size=bs_train, shuffle=True)
     test_loader = torch.utils.data.DataLoader(ds_test, batch_size=bs_test)
-
     # Create model, loss, and optimizer instances
     model = model_cls(
-        in_channels=3,
-        out_channels=10,
         hidden_dims=hidden_dims,
-        filters_per_layer=filters_per_layer,
-        layers_per_block=layers_per_block,
+        in_size=in_size,
+        out_classes=10,
+        channels=filters_per_layer*layers_per_block,
         pool_every=pool_every,
+        **kw
     ).to(device)
-
-    criterion = torch.nn.CrossEntropyLoss()
+    
+    # Create model, loss and optimizer instances
+    
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=reg)
-
+    criterion = torch.nn.CrossEntropyLoss()
     # Create a Trainer instance
     trainer = training.TorchTrainer(model, criterion, optimizer, device)
 
     # Train the model and save the fit results
     fit_res = trainer.fit(
-        train_loader=train_loader,
-        val_loader=test_loader,
-        max_epochs=epochs,
+        dl_train=train_loader,
+        dl_test=test_loader,
+        num_epochs=epochs,
         early_stopping=early_stopping,
-        batches_per_epoch=batches,
     )
-
-    # Save experiment parameters and fit results
-    save_experiment(run_name, out_dir, cfg, fit_res)
-    # Create model, loss and optimizer instances
-    
     # ========================
 
     save_experiment(run_name, out_dir, cfg, fit_res)
@@ -262,3 +256,4 @@ if __name__ == "__main__":
     del parsed_args.subcmd_fn
     print(f"*** Starting {subcmd_fn.__name__} with config:\n{parsed_args}")
     subcmd_fn(**vars(parsed_args))
+    
