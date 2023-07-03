@@ -99,7 +99,7 @@ def plot_fit(fit_res: FitResult, fig=None, log_loss=False, legend=None):
     """
     if fig is None:
         fig, axes = plt.subplots(
-            nrows=2, ncols=2, figsize=(16, 10), sharex="col",
+            nrows=2, ncols=2, figsize=(16, 10), sharex="col", sharey=False
         )
         axes = axes.reshape(-1)
     else:
