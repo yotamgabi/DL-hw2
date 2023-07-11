@@ -121,7 +121,7 @@ def plot_fit(fit_res: FitResult, fig=None, log_loss=False, legend=None):
         else:
             ax.set_xlabel("Epoch #")
             ax.set_ylabel("Accuracy (%)")
-        if legend and (lossacc is not "loss"):
+        if legend:
             ax.legend()
         ax.grid(True)
 
