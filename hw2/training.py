@@ -86,9 +86,9 @@ class Trainer(abc.ABC):
             test_res = self.test_epoch(dl_test, verbose=verbose, **kw)
 
             # Save losses and accuracies
-            train_loss.append(train_res.losses)
+            train_loss.append(torch.mean((torch.tensor(train_res.losses))).item())
             train_acc.append(train_res.accuracy)
-            test_loss.append(test_res.losses)
+            test_loss.append(torch.mean((torch.tensor(test_res.losses))).item())
             test_acc.append(test_res.accuracy)
 
             # Check for early stopping
