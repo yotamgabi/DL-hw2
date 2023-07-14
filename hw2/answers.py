@@ -195,16 +195,16 @@ capacity for the model to learn diverse features without overfitting, resulting 
 """
 
 part3_q4 = r"""**Your answer:** 
-There was no significant difference between the models with L=1 or L=2.. but,
-It seems that a single/double layer (L=1/2) model with K=[64,128,256] performs significantly 
-better (75% accuracy) compared to models with the higher depths (L=3,4), which hovered around 10% accuracy.
+There is significant difference between the models with L=1 to the rest.
+It seems that a single layer model with K=[64,128,256] performs significantly 
+better (70% accuracy) compared to models with the higher depths (L=2,3,4), which hovered around 10% accuracy
+(did not converge). 
 
-When comparing these results with the previous experiments, the general theme seems to be that deeper networks (L=4 
+When comparing these results with the previous experiments, the general theme seems to be that deeper networks (L=2 
 or more) consistently underperform compared to shallower ones. This could be an indication that the task or the data 
 doesn't benefit from deeper architectures, or that other techniques are needed to effectively train deeper models (
-e.g., regularization, different optimization algorithms, etc.).
-In general, it seems that wider nn perform better than narrow ones over this dataset
-, as the accuracy increases as K increases. 
+e.g.- regularization, different optimization algorithms, different convolution, resnet etc.).
+In general, it seems that wider nn perform better than narrow ones over this dataset.
 """
 
 part3_q5 = r"""**Your answer:**
@@ -215,6 +215,8 @@ compared to 10% in previous experiments without residual connections.
 
 Depth and Width Influence: With K=[64, 128, 256], the best test performance was seen with L=2 (74% accuracy), 
 declining as depth increased. Wider networks (K=[64, 128, 256]) performed better than narrower ones (K=32).
+It also seems that the convolution layers are more important than the fully connected layers, as the accuracy
+increases as the convolution is 'wider' K=[64, 128, 256], (comparing to fully connected with K=8,16,32).
 
 Overfitting: Small gaps between training and test accuracy suggest mild overfitting. Overfitting-prone models might 
 benefit from regularization, dropout, or larger training sets.
@@ -223,8 +225,8 @@ Trainability: All network configurations were trainable, likely due to residual 
 significantly dropped with L=32, K=32 (40% training and 42% test accuracy).
 
 These results highlight the utility of techniques like residual connections in training deeper networks, and the need 
-for a balance between network depth and width for optimal performance. Increasing depth or width isn't always 
-beneficial.
+for a balance between network depth , width and convolutional properties for optimal performance. 
+Increasing depth or width isn't always beneficial.
 """
 
 part3_q6 = r"""**Your answer:** 
