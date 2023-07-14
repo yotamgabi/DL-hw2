@@ -202,6 +202,8 @@ When comparing these results with the previous experiments, the general theme se
 or more) consistently underperform compared to shallower ones. This could be an indication that the task or the data 
 doesn't benefit from deeper architectures, or that other techniques are needed to effectively train deeper models (
 e.g., regularization, different optimization algorithms, etc.).
+In general, it seems that wider nn perform better than narrow ones over this dataset
+, as the accuracy increases as K increases. 
 """
 
 part3_q5 = r"""**Your answer:**
