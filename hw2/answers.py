@@ -208,21 +208,25 @@ In general, it seems that wider nn perform better than narrow ones over this dat
 """
 
 part3_q5 = r"""**Your answer:**
- 
+Most obvious conclusion when comparing 1.4 to 1.3 is that ResNet allows us to train deeper networks.
 Residual Connections Impact: Residual connections have improved the performance of 
-deeper networks. For instance, test accuracies for configurations L=8, K=32 and L=16, K=32 are now around 70%, 
-compared to 10% in previous experiments without residual connections.
+*deeper networks* (such as in L=8).
 
-Depth and Width Influence: With K=[64, 128, 256], the best test performance was seen with L=2 (74% accuracy), 
-declining as depth increased. Wider networks (K=[64, 128, 256]) performed better than narrower ones (K=32).
+Depth and Width Influence: With K=[64, 128, 256], the best test performance was seen with L=8 (>75% accuracy), 
+declining as depth decreased. Wider networks (K=[64, 128, 256]) with convolutional properties
+performed better than narrower ones (K=32) or with less convolutional properties. 
 It also seems that the convolution layers are more important than the fully connected layers, as the accuracy
 increases as the convolution is 'wider' K=[64, 128, 256], (comparing to fully connected with K=8,16,32).
+
+For instance, test accuracies for configurations L=8, K=32 and L=16, K=32 are now around 70%, 
+compared to lower results in previous experiments without residual connections.
 
 Overfitting: Small gaps between training and test accuracy suggest mild overfitting. Overfitting-prone models might 
 benefit from regularization, dropout, or larger training sets.
 
-Trainability: All network configurations were trainable, likely due to residual connections. However, performance 
-significantly dropped with L=32, K=32 (40% training and 42% test accuracy).
+Trainability (exploading / vanishing grads): All network configurations were trainable, unlike in previous
+experiments. This is likely due to the residual connections, which allow gradients to "flow" through the network
+more easily.
 
 These results highlight the utility of techniques like residual connections in training deeper networks, and the need 
 for a balance between network depth , width and convolutional properties for optimal performance. 
@@ -231,7 +235,8 @@ Increasing depth or width isn't always beneficial.
 
 part3_q6 = r"""**Your answer:** 
 1. **Architecture Modifications**: In our custom network (`YourCodeNet` class), 
-we added Dropout (0.4) and Batch Normalization to address limitations from Experiment 1.
+we added Dropout (0.23, figured out after tweaking with GPU) and Batch Normalization to address limitations from 
+Experiment 1.
 
 2. **Results Analysis**: Experiment 2 achieved 74% accuracy for `L=3`, outperforming Experiment 1. The additions of 
 Dropout and Batch Normalization improved model performance and robustness."""
