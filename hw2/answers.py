@@ -164,7 +164,7 @@ and performs poorly on unseen data.
 
 Use Residual Connections: Also known as skip connections, they were introduced in ResNet (Residual Network) to 
 alleviate the vanishing gradient problem. They do this by providing a shortcut for the gradient to flow through. If 
-you add these connections to your network, the gradients can bypass layers, which can prevent them from becoming too 
+we will add these connections to our network, the gradients can bypass layers, which can prevent them from becoming too 
 small.
 
 Batch Normalization: Batch normalization can also help mitigate the vanishing/exploding gradients problem. It works 
@@ -195,8 +195,9 @@ capacity for the model to learn diverse features without overfitting, resulting 
 """
 
 part3_q4 = r"""**Your answer:** 
-It seems that a single layer (L=1) model with K=[64,128,256] performs significantly 
-better (75% accuracy) compared to models with higher depths (L=2,3,4), which all hovered around 10% accuracy.
+There was no significant difference between the models with L=1 or L=2.. but,
+It seems that a single/double layer (L=1/2) model with K=[64,128,256] performs significantly 
+better (75% accuracy) compared to models with the higher depths (L=3,4), which hovered around 10% accuracy.
 
 When comparing these results with the previous experiments, the general theme seems to be that deeper networks (L=4 
 or more) consistently underperform compared to shallower ones. This could be an indication that the task or the data 
