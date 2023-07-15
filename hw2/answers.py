@@ -235,8 +235,7 @@ Increasing depth or width isn't always beneficial.
 
 part3_q6 = r"""**Your answer:** 
 1. **Architecture Modifications**: In our custom network (`YourCodeNet` class), 
-we added Dropout (0.23, figured out after tweaking with GPU) and Batch Normalization to address limitations from 
-Experiment 1.
+we added Dropout (0.4) and Batch Normalization to address limitations from Experiment 1.
 
 2. **Results Analysis**: Experiment 2 achieved 74% accuracy for `L=3`, outperforming Experiment 1. The additions of 
 Dropout and Batch Normalization improved model performance and robustness."""
